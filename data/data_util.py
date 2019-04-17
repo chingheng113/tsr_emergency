@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from data import selected_columns
+from sklearn.preprocessing import Imputer
+from scipy.stats import iqr
 from datetime import datetime
 
 
@@ -52,24 +54,40 @@ def clean_NIHS():
     return df_nihs
 
 
+
+def outliers_iqr(ys):
+    # http://colingorrie.github.io/outlier-detection.html
+    quartile_1, quartile_3 = np.nanpercentile(ys, [25, 75],)
+    iqr = quartile_3 - quartile_1
+    lower_bound = quartile_1 - (iqr * 1.5)
+    upper_bound = quartile_3 + (iqr * 1.5)
+    return np.where((ys > upper_bound) | (ys < lower_bound))
+
+
+def outlier_to_mean(df, columns):
+    for col in columns:
+        df[col].loc[df[col] > 998] = np.nan
+        outlier_inx = outliers_iqr(df[col])
+        df[col].loc[outlier_inx] = np.nan
+    df[columns] = Imputer(missing_values=np.nan, strategy='mean', axis=0).fit_transform(df[columns])
+    return df
+
+
 def get_clean_case_for_er():
     df_case = pd.read_csv('CASEDCASE.csv')
     df_case = df_case[selected_columns.case_column]
-    # Replace outlier to Median
-    outlier_cols = []
-    df_case.loc[df_case.HEIGHT_NM < 100] = np.nan
-    df_case.loc[df_case.HEIGHT_NM > 998] = np.nan
-    df_case.loc[df_case.WEIGHT_NM > 998] = np.nan
-    df_case.loc[df_case.SBP_NM > 998] = np.nan
-    df_case.loc[df_case.DBP_NM > 998] = np.nan
-    df_case.loc[df_case.BT_NM > 998] = np.nan
-    df_case.loc[df_case.HR_NM > 998] = np.nan
-    df_case.loc[df_case.RR_NM > 998] = np.nan
 
-
-    df_case.loc[~df_case.GCSE_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
-    df_case.loc[~df_case.GCSV_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
-    df_case.loc[~df_case.GCSM_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
+    # Replace numeric outlier to Median
+    outlier_cols = ['HEIGHT_NM', 'WEIGHT_NM', 'SBP_NM', 'DBP_NM', 'BT_NM', 'HR_NM', 'RR_NM',
+                    'HB_NM', 'HCT_NM', 'PLATELET_NM', 'WBC_NM', 'PTT1_NM', 'PTT2_NM', 'PTINR_NM',
+                    'ER_NM', 'BUN_NM', 'CRE_NM', 'ALB_NM', 'CRP_NM', 'HBAC_NM']
+    df_case = outlier_to_mean(df_case, outlier_cols)
+    # Degree type data
+    df_case['OPC_ID'].loc[~df_case.OPC_ID.isin(['1', '2', '3'])] = np.nan
+    df_case['GCSE_NM'].loc[~df_case.GCSE_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
+    df_case['GCSV_NM'].loc[~df_case.GCSV_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
+    df_case['GCSM_NM'].loc[~df_case.GCSM_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
+    df_case.to_csv('a.csv')
 
 
 def is_tpa():
