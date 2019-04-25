@@ -12,36 +12,36 @@ from sklearn.preprocessing import StandardScaler
 def clean_nihs():
     df_nihs = pd.read_csv('CASEDNIHS(denormalized).csv')
     # print(df_nihs.shape)
-    df_nihs.loc[~df_nihs.NIHS_1a_in.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_1a_out.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_1b_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_1b_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_1c_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_1c_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_2_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_2_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_3_in.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_3_out.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_4_in.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_4_out.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_5aL_in.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_5aL_out.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_5bR_in.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_5bR_out.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_6aL_in.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_6aL_out.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_6bR_in.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_6bR_out.isin(['0', '1', '2', '3', '4'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_7_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_7_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_8_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_8_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_9_in.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_9_out.isin(['0', '1', '2', '3'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_10_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_10_out.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_11_in.isin(['0', '1', '2'])] = np.nan
-    df_nihs.loc[~df_nihs.NIHS_11_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_1a_in'].loc[~df_nihs.NIHS_1a_in.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_1a_out'].loc[~df_nihs.NIHS_1a_out.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_1b_in'].loc[~df_nihs.NIHS_1b_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_1b_out'].loc[~df_nihs.NIHS_1b_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_1c_in'].loc[~df_nihs.NIHS_1c_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_1c_out'].loc[~df_nihs.NIHS_1c_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_2_in'].loc[~df_nihs.NIHS_2_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_2_out'].loc[~df_nihs.NIHS_2_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_3_in'].loc[~df_nihs.NIHS_3_in.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_3_out'].loc[~df_nihs.NIHS_3_out.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_4_in'].loc[~df_nihs.NIHS_4_in.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_4_out'].loc[~df_nihs.NIHS_4_out.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_5aL_in'].loc[~df_nihs.NIHS_5aL_in.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_5aL_out'].loc[~df_nihs.NIHS_5aL_out.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_5bR_in'].loc[~df_nihs.NIHS_5bR_in.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_5bR_out'].loc[~df_nihs.NIHS_5bR_out.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_6aL_in'].loc[~df_nihs.NIHS_6aL_in.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_6aL_out'].loc[~df_nihs.NIHS_6aL_out.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_6bR_in'].loc[~df_nihs.NIHS_6bR_in.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_6bR_out'].loc[~df_nihs.NIHS_6bR_out.isin(['0', '1', '2', '3', '4'])] = np.nan
+    df_nihs['NIHS_7_in'].loc[~df_nihs.NIHS_7_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_7_out'].loc[~df_nihs.NIHS_7_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_8_in'].loc[~df_nihs.NIHS_8_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_8_out'].loc[~df_nihs.NIHS_8_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_9_in'].loc[~df_nihs.NIHS_9_in.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_9_out'].loc[~df_nihs.NIHS_9_out.isin(['0', '1', '2', '3'])] = np.nan
+    df_nihs['NIHS_10_in'].loc[~df_nihs.NIHS_10_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_10_out'].loc[~df_nihs.NIHS_10_out.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_11_in'].loc[~df_nihs.NIHS_11_in.isin(['0', '1', '2'])] = np.nan
+    df_nihs['NIHS_11_out'].loc[~df_nihs.NIHS_11_out.isin(['0', '1', '2'])] = np.nan
     df_nihs.dropna(axis=0, inplace=True)
     # print(df_nihs.shape)
     df_nihs['NIHS_TOTAL_IN'] = df_nihs.NIHS_1a_in+df_nihs.NIHS_1b_in+df_nihs.NIHS_1c_in+df_nihs.NIHS_2_in+df_nihs.NIHS_3_in+\
@@ -54,6 +54,33 @@ def clean_nihs():
                           df_nihs.NIHS_11_out
     df_nihs['DIFF'] = df_nihs.NIHS_TOTAL_OUT - df_nihs.NIHS_TOTAL_IN
     return df_nihs
+
+
+def clean_dbmrs():
+    df_dbmrs = pd.read_csv('CASEDBMRS(denormalized).csv')
+    df_dbmrs['Feeding'].loc[~df_dbmrs.Feeding.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['Transfers'].loc[~df_dbmrs.Transfers.isin(['0', '5', '10', '15'])] = np.nan
+    df_dbmrs['Bathing'].loc[~df_dbmrs.Bathing.isin(['0', '5'])] = np.nan
+    df_dbmrs['Toilet_use'].loc[~df_dbmrs.Toilet_use.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['Grooming'].loc[~df_dbmrs.Grooming.isin(['0', '5'])] = np.nan
+    df_dbmrs['Mobility'].loc[~df_dbmrs.Mobility.isin(['0', '5', '10', '15'])] = np.nan
+    df_dbmrs['Stairs'].loc[~df_dbmrs.Stairs.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['Dressing'].loc[~df_dbmrs.Dressing.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['Bowel_control'].loc[~df_dbmrs.Bowel_control.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['Bladder_control'].loc[~df_dbmrs.Bladder_control.isin(['0', '5', '10'])] = np.nan
+    df_dbmrs['discharged_mrs'].loc[~df_dbmrs.discharged_mrs.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
+    return df_dbmrs
+
+
+def clean_rfur():
+    df_rfur = pd.read_csv('CASEDRFUR(denormalized).csv')
+    rfur_cols = ['VERS_1', 'VERS_3', 'VERS_6', 'VERS_12', 'VEIHD_1', 'VEIHD_3', 'VEIHD_6', 'VEIHD_12']
+    df_rfur.drop(rfur_cols, axis=1, inplace=True)
+    df_rfur['MRS_1'].loc[~df_rfur.MRS_1.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
+    df_rfur['MRS_3'].loc[~df_rfur.MRS_3.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
+    df_rfur['MRS_6'].loc[~df_rfur.MRS_6.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
+    df_rfur['MRS_12'].loc[~df_rfur.MRS_12.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
+    return df_rfur
 
 
 def get_cleaned_nihs_for_er():
@@ -143,6 +170,9 @@ def normalization_onehotcoding(df):
 
 
 def get_multi_balanced_data(df):
+
+    # Try Tomek Links – an under sampling strategy
+
     df_1 = df[df.ICD_ID == 1]
     df_2 = df[df.ICD_ID == 2]
     df_3 = df[df.ICD_ID == 3]
@@ -172,7 +202,7 @@ def get_binary_balanced_data(df):
     return multi_df
 
 
-if __name__ == '__main__':
+def create_tsr_er_dataset():
     df_case = get_cleaned_case_for_er()
     df_nihs = get_cleaned_nihs_for_er()
     df_mcase = get_cleaned_mcase()
@@ -183,3 +213,19 @@ if __name__ == '__main__':
     df_result = exclusion_criteria(df_result)
     df_result = normalization_onehotcoding(df_result)
     df_result.to_csv('tsr_er.csv', index=False)
+
+
+def create_mrs_nih_dataset():
+    df_mcase = get_cleaned_mcase()
+    df_dbmrs = clean_dbmrs() # still keep null
+    df_nihs = clean_nihs() # still keep null
+    df_rfur = clean_rfur() # still keep null
+    df_merged = pd.merge(df_nihs, df_dbmrs, on=['ICASE_ID', 'IDCASE_ID'])
+    df_merged = pd.merge(df_merged, df_rfur, on=['ICASE_ID', 'IDCASE_ID'])
+    df_merged = pd.merge(df_merged, df_mcase, on=['ICASE_ID'])
+    df_merged.to_csv('mrs_nihss.csv', index=False)
+
+
+if __name__ == '__main__':
+    # create_tsr_er_dataset()
+    create_mrs_nih_dataset()
