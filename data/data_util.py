@@ -171,7 +171,8 @@ def normalization_onehotcoding(df):
 
 def get_multi_balanced_data(df):
 
-    # Try Tomek Links – an under sampling strategy
+    Try Tomek Links – an under sampling strategy
+    https: // blog.csdn.net / kizgel / article / details / 78553009
 
     df_1 = df[df.ICD_ID == 1]
     df_2 = df[df.ICD_ID == 2]
