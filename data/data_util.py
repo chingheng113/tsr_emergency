@@ -5,7 +5,7 @@ from data import selected_columns
 from sklearn.preprocessing import Imputer
 from sklearn.utils import resample
 from datetime import datetime
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 
@@ -83,6 +83,18 @@ def clean_rfur():
     return df_rfur
 
 
+def get_cleaned_dgfa_for_er():
+    df_dgfa = pd.read_csv('CASEDDGFA.csv')
+    df_dgfa = df_dgfa[selected_columns.dgfa_column]
+    check_column = selected_columns.dgfa_column
+    check_column.remove('ICASE_ID')
+    check_column.remove('IDCASE_ID')
+    for c in check_column:
+        # Don't want 'don't know'
+        df_dgfa[c].loc[~df_dgfa[c].isin([0., 1.])] = np.nan
+    df_dgfa.dropna(axis=0, inplace=True)
+    return df_dgfa
+
 def get_cleaned_nihs_for_er():
     df_nihs = clean_nihs()
     df_nihs = df_nihs[selected_columns.nihs_column]
@@ -159,25 +171,32 @@ def exclusion_criteria(df):
 
 def normalization_onehotcoding(df):
     scaler = StandardScaler()
+    # scaler = MinMaxScaler()
     id_data = df[['ICASE_ID', 'IDCASE_ID']]
     y_data = df[['ICD_ID']].astype(int)
     X_data_category = pd.get_dummies(df['GENDER_TX'].astype(int), prefix='GENDER')
-    X_data_numeric = df.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID', 'GENDER_TX'], axis=1)
+    x_data_bool = df[selected_columns.dgfa_column]
+    X_data_numeric = df.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID', 'GENDER_TX']+selected_columns.dgfa_column, axis=1)
     X_data_scaled = scaler.fit_transform(X_data_numeric)
     X_data_scaled = pd.DataFrame(X_data_scaled, index=X_data_numeric.index, columns=X_data_numeric.columns)
-    result = pd.concat([id_data, X_data_category, X_data_scaled, y_data], axis=1)
+    result = pd.concat([id_data, X_data_category, X_data_scaled, x_data_bool, y_data], axis=1)
     return result
 
 
 def get_multi_balanced_data(df):
 
-    Try Tomek Links – an under sampling strategy
-    https: // blog.csdn.net / kizgel / article / details / 78553009
+    # Try Tomek Links – an under sampling strategy
+    # https: // blog.csdn.net / kizgel / article / details / 78553009
 
     df_1 = df[df.ICD_ID == 1]
+    print(df_1.shape)
     df_2 = df[df.ICD_ID == 2]
+    print(df_2.shape)
     df_3 = df[df.ICD_ID == 3]
+    print(df_3.shape)
     df_4 = df[df.ICD_ID == 4]
+    print(df_4.shape)
+
     resample_size = min([df_1.shape[0], df_2.shape[0], df_3.shape[0], df_4.shape[0]])
     df_1_downsampled = resample(df_1, replace=False,  # sample without replacement
                                 n_samples=resample_size,  # to match minority class
@@ -203,11 +222,20 @@ def get_binary_balanced_data(df):
     return multi_df
 
 
+def get_binary_data(df):
+    # ischemic: ICD_ID == 1, 2
+    # hemorrhagic: ICD_ID == 3, 4
+    df['ICD_ID'] = df['ICD_ID'].replace(to_replace={1: 0, 2: 0, 3: 1, 4: 1})
+    return df
+
+
 def create_tsr_er_dataset():
     df_case = get_cleaned_case_for_er()
     df_nihs = get_cleaned_nihs_for_er()
     df_mcase = get_cleaned_mcase()
+    df_dgfr = get_cleaned_dgfa_for_er()
     df_merged = pd.merge(df_case, df_nihs, on=['ICASE_ID', 'IDCASE_ID'])
+    df_merged = pd.merge(df_merged, df_dgfr, on=['ICASE_ID', 'IDCASE_ID'])
     df_merged = pd.merge(df_merged, df_mcase, on=['ICASE_ID'])
     df_merged.dropna(axis=0, inplace=True)
     df_result = calculate_age(df_merged)
@@ -228,5 +256,5 @@ def create_mrs_nih_dataset():
 
 
 if __name__ == '__main__':
-    # create_tsr_er_dataset()
-    create_mrs_nih_dataset()
+    create_tsr_er_dataset()
+    # create_mrs_nih_dataset()

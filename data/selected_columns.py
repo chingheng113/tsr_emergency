@@ -52,6 +52,19 @@ nihs_column = [
     'NIHS_TOTAL_IN'
 ]
 
+dgfa_column = [
+    'ICASE_ID',
+    'IDCASE_ID',
+    'HT_ID',
+    'HC_ID',
+    'DM_ID',
+    'PCVA_ID',
+    'PTIA_ID',
+    'HD_ID',
+    'UR_ID',
+    'PAD_ID'
+]
+
 case_column_date = [
             'ONSETH_NM',
             'ONSETM_NM',
