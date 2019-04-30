@@ -18,8 +18,12 @@ X_data = data.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID'], axis=1)
 
 id_train, id_test, X_train, X_test, y_train, y_test = train_test_split(id_data, X_data, y_data, test_size=0.33, random_state=42)
 
-X_train_no_dgfa = X_train.drop(selected_columns.dgfa_column, axis=1, errors='ignore')
-X_test_no_dgfa = X_test.drop(selected_columns.dgfa_column, axis=1, errors='ignore')
+scaler, X_train = data_util.normalization_onehotcoding_for_training(X_train)
+X_train_no_dgfa = X_train.drop(selected_columns.dgfa_column, axis=1)
+
+X_test = data_util.normalization_onehotcoding_for_testing(X_test, scaler)
+X_test_no_dgfa = X_test.drop(selected_columns.dgfa_column, axis=1)
+
 
 clf = SVC(kernel='rbf', random_state=42, class_weight='balanced')
 # clf = RandomForestClassifier(n_estimators=100, random_state=123)

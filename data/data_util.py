@@ -85,11 +85,8 @@ def clean_rfur():
 
 def get_cleaned_dgfa_for_er():
     df_dgfa = pd.read_csv('CASEDDGFA.csv')
-    df_dgfa = df_dgfa[selected_columns.dgfa_column]
-    check_column = selected_columns.dgfa_column
-    check_column.remove('ICASE_ID')
-    check_column.remove('IDCASE_ID')
-    for c in check_column:
+    df_dgfa = df_dgfa[['ICASE_ID', 'IDCASE_ID']+selected_columns.dgfa_column]
+    for c in selected_columns.dgfa_column:
         # Don't want 'don't know'
         df_dgfa[c].loc[~df_dgfa[c].isin([0., 1.])] = np.nan
     df_dgfa.dropna(axis=0, inplace=True)
@@ -169,19 +166,26 @@ def exclusion_criteria(df):
     return df
 
 
-def normalization_onehotcoding(df):
+def normalization_onehotcoding_for_training(X_df):
     scaler = StandardScaler()
-    # scaler = MinMaxScaler()
-    id_data = df[['ICASE_ID', 'IDCASE_ID']]
-    y_data = df[['ICD_ID']].astype(int)
-    X_data_category = pd.get_dummies(df['GENDER_TX'].astype(int), prefix='GENDER')
-    x_data_bool = df[selected_columns.dgfa_column]
-    X_data_numeric = df.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID', 'GENDER_TX']+selected_columns.dgfa_column, axis=1)
-    X_data_scaled = scaler.fit_transform(X_data_numeric)
+    X_data_category = pd.get_dummies(X_df['GENDER_TX'].astype(int), prefix='GENDER')
+    x_data_bool = X_df[selected_columns.dgfa_column]
+    X_data_numeric = X_df.drop(['GENDER_TX']+selected_columns.dgfa_column, axis=1)
+    scaler.fit(X_data_numeric)
+    X_data_scaled = scaler.transform(X_data_numeric)
     X_data_scaled = pd.DataFrame(X_data_scaled, index=X_data_numeric.index, columns=X_data_numeric.columns)
-    result = pd.concat([id_data, X_data_category, X_data_scaled, x_data_bool, y_data], axis=1)
-    return result
+    result = pd.concat([X_data_category, X_data_scaled, x_data_bool], axis=1)
+    return scaler, result
 
+
+def normalization_onehotcoding_for_testing(X_df, scaler):
+    X_data_category = pd.get_dummies(X_df['GENDER_TX'].astype(int), prefix='GENDER')
+    x_data_bool = X_df[selected_columns.dgfa_column]
+    X_data_numeric = X_df.drop(['GENDER_TX'] + selected_columns.dgfa_column, axis=1)
+    X_data_scaled = scaler.transform(X_data_numeric)
+    X_data_scaled = pd.DataFrame(X_data_scaled, index=X_data_numeric.index, columns=X_data_numeric.columns)
+    result = pd.concat([X_data_category, X_data_scaled, x_data_bool], axis=1)
+    return result
 
 def get_multi_balanced_data(df):
 
@@ -240,7 +244,6 @@ def create_tsr_er_dataset():
     df_merged.dropna(axis=0, inplace=True)
     df_result = calculate_age(df_merged)
     df_result = exclusion_criteria(df_result)
-    df_result = normalization_onehotcoding(df_result)
     df_result.to_csv('tsr_er.csv', index=False)
 
 

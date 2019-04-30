@@ -53,8 +53,6 @@ nihs_column = [
 ]
 
 dgfa_column = [
-    'ICASE_ID',
-    'IDCASE_ID',
     'HT_ID',
     'HC_ID',
     'DM_ID',
