@@ -6,6 +6,7 @@ from sklearn.preprocessing import Imputer
 from sklearn.utils import resample
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from imblearn.under_sampling import TomekLinks
 
 
 
@@ -187,11 +188,8 @@ def normalization_onehotcoding_for_testing(X_df, scaler):
     result = pd.concat([X_data_category, X_data_scaled, x_data_bool], axis=1)
     return result
 
+
 def get_multi_balanced_data(df):
-
-    # Try Tomek Links – an under sampling strategy
-    # https: // blog.csdn.net / kizgel / article / details / 78553009
-
     df_1 = df[df.ICD_ID == 1]
     print(df_1.shape)
     df_2 = df[df.ICD_ID == 2]
@@ -218,12 +216,14 @@ def get_multi_balanced_data(df):
     return result
 
 
-def get_binary_balanced_data(df):
-    # ischemic: ICD_ID == 1, 2
-    # hemorrhagic: ICD_ID == 3, 4
-    multi_df = get_multi_balanced_data(df)
-    multi_df['ICD_ID'] = multi_df['ICD_ID'].replace(to_replace={1: 0, 2: 0, 3: 1, 4: 1})
-    return multi_df
+def get_binary_Tomek_Links_cleaned_data(id_df, X_df, y_df):
+    tLinks = TomekLinks()
+    tLinks.fit_sample(X_df, y_df)
+    sample_indices = tLinks.sample_indices_
+    id_df_cleaned = id_df.iloc[sample_indices]
+    X_df_cleaned = X_df.iloc[sample_indices]
+    y_df_cleaned = y_df.iloc[sample_indices]
+    return id_df_cleaned, X_df_cleaned, y_df_cleaned
 
 
 def get_binary_data(df):
