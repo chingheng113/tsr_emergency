@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 from data import selected_columns
 from sklearn.preprocessing import Imputer
@@ -256,6 +257,16 @@ def create_mrs_nih_dataset():
     df_merged = pd.merge(df_merged, df_rfur, on=['ICASE_ID', 'IDCASE_ID'])
     df_merged = pd.merge(df_merged, df_mcase, on=['ICASE_ID'])
     df_merged.to_csv('mrs_nihss.csv', index=False)
+
+
+def save_variables(filename, variable):
+    with open(filename, 'wb') as f:
+        pickle.dump(variable, f)
+
+
+def load_variable(filename):
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
 
 
 if __name__ == '__main__':
