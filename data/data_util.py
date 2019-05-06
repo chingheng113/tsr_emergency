@@ -7,8 +7,8 @@ from sklearn.preprocessing import Imputer
 from sklearn.utils import resample
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from imblearn.under_sampling import TomekLinks
-
+from imblearn.under_sampling import TomekLinks, RandomUnderSampler
+from imblearn.over_sampling import SMOTE
 
 
 def clean_nihs():
@@ -226,6 +226,23 @@ def get_binary_Tomek_Links_cleaned_data(id_df, X_df, y_df):
     y_df_cleaned = y_df.iloc[sample_indices]
     return id_df_cleaned, X_df_cleaned, y_df_cleaned
 
+
+def get_random_under_samples(id_df, X_df, y_df):
+    rus = RandomUnderSampler(random_state=42)
+    rus.fit_sample(X_df, y_df)
+    print(y_df[y_df.ICD_ID == 1].shape)
+    sample_indices = rus.sample_indices_
+    id_df_cleaned = id_df.iloc[sample_indices]
+    X_df_cleaned = X_df.iloc[sample_indices]
+    y_df_cleaned = y_df.iloc[sample_indices]
+    return id_df_cleaned, X_df_cleaned, y_df_cleaned
+
+
+def get_over_sample_SMOTE(id_df, X_df, y_df):
+    sm = SMOTE(sampling_strategy='auto', random_state=42)
+    print(y_df[y_df.ICD_ID == 0].shape)
+    X_res, y_res = sm.fit_resample(X_df, y_df)
+    return X_res, y_res
 
 def get_binary_data(df):
     # ischemic: ICD_ID == 1, 2

@@ -48,8 +48,7 @@ nihs_column = [
     'NIHS_8_in',
     'NIHS_9_in',
     'NIHS_10_in',
-    'NIHS_11_in',
-    'NIHS_TOTAL_IN'
+    'NIHS_11_in'
 ]
 
 dgfa_column = [

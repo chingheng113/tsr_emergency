@@ -1,7 +1,6 @@
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix,classification_report
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
 from sklearn.utils import shuffle
-from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 import os, sys
@@ -12,7 +11,11 @@ training_data_name = os.path.join('..', 'data', 'training_data.pkl')
 testing_data_name = os.path.join('..', 'data', 'testing_data.pkl')
 if os.path.isfile(training_data_name) & os.path.isfile(testing_data_name):
     id_train, X_train, y_train = data_util.load_variable(training_data_name)
+    train_df = pd.concat([id_train, X_train, y_train], axis=1)
+    train_df.to_csv('training_data.csv', index=False)
     id_test, X_test, y_test = data_util.load_variable(testing_data_name)
+    test_df = pd.concat([id_test, X_test, y_test], axis=1)
+    test_df.to_csv('testing_data.csv', index=False)
 else:
     data = pd.read_csv(os.path.join('..', 'data', 'tsr_er.csv'))
     data = data_util.get_binary_data(data)
@@ -22,26 +25,43 @@ else:
     y_data = data[['ICD_ID']]
     X_data = data.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID'], axis=1)
     id_train, id_test, X_train, X_test, y_train, y_test = train_test_split(id_data, X_data, y_data, test_size=0.33, random_state=42)
-    # preprocessing
-    scaler, X_train = data_util.normalization_onehotcoding_for_training(X_train)
-    print(y_train[y_train.ICD_ID == 0].shape[0]/y_train.shape[0])
+    # preprocess training data
     id_train, X_train, y_train = data_util.get_binary_Tomek_Links_cleaned_data(id_train, X_train, y_train)
-    print(y_train[y_train.ICD_ID == 0].shape[0]/y_train.shape[0])
+    id_train, X_train, y_train = data_util.get_random_under_samples(id_train, X_train, y_train)
+    scaler, X_train = data_util.normalization_onehotcoding_for_training(X_train)
+    # preprocess testing data
     X_test = data_util.normalization_onehotcoding_for_testing(X_test, scaler)
     # saving data
     data_util.save_variables(training_data_name, [id_train, X_train, y_train])
     data_util.save_variables(testing_data_name, [id_test, X_test, y_test])
 
 
-# clf = SVC(kernel='rbf', random_state=42, class_weight='balanced')
-clf = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=123)
+clf = RandomForestClassifier(n_estimators=100, random_state=123, class_weight='balanced')
+# All Features
 clf.fit(X_train, y_train)
-
 y_predict = clf.predict(X_test)
 print(classification_report(y_test, y_predict))
 mc = confusion_matrix(y_test, y_predict)
 print(mc)
+y_probas = clf.predict_proba(X_test)
+fpr, tpr, thresholds = roc_curve(y_test, y_probas[:, 1])
+roc_auc = auc(fpr, tpr)
+print(roc_auc)
 
+# LASSO Features
+X_train_Lasso = X_train.drop(['NIHS_TOTAL_IN', 'GENDER_1', 'ALB_NM', 'HR_NM', 'ER_NM', 'PTT1_NM', 'NIHS_8_in', 'NIHS_3_in', 'CRP_NM', 'PTINR_NM', 'GCSM_NM', 'NIHS_6bR_in', 'HBAC_NM', 'HCT_NM', 'NIHS_11_in'], axis=1)
+X_test_Lasso = X_test.drop(['NIHS_TOTAL_IN', 'GENDER_1', 'ALB_NM', 'HR_NM', 'ER_NM', 'PTT1_NM', 'NIHS_8_in', 'NIHS_3_in', 'CRP_NM', 'PTINR_NM', 'GCSM_NM', 'NIHS_6bR_in', 'HBAC_NM', 'HCT_NM', 'NIHS_11_in'], axis=1)
+clf.fit(X_train_Lasso, y_train)
+y_predict = clf.predict(X_test_Lasso)
+print(classification_report(y_test, y_predict))
+mc = confusion_matrix(y_test, y_predict)
+print(mc)
+y_probas = clf.predict_proba(X_test_Lasso)
+fpr, tpr, thresholds = roc_curve(y_test, y_probas[:, 1])
+roc_auc = auc(fpr, tpr)
+print(roc_auc)
+
+# no Risk Factors
 X_train_no_dgfa = X_train.drop(selected_columns.dgfa_column, axis=1)
 clf.fit(X_train_no_dgfa, y_train)
 X_test_no_dgfa = X_test.drop(selected_columns.dgfa_column, axis=1)
@@ -49,3 +69,7 @@ y_predict_no_dgfa = clf.predict(X_test_no_dgfa)
 print(classification_report(y_test, y_predict_no_dgfa))
 mc = confusion_matrix(y_test, y_predict_no_dgfa)
 print(mc)
+y_probas_no_dgfa = clf.predict_proba(X_test_no_dgfa)
+fpr, tpr, thresholds = roc_curve(y_test, y_probas_no_dgfa[:, 1])
+roc_auc = auc(fpr, tpr)
+print(roc_auc)
