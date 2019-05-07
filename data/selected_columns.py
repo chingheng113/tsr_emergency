@@ -75,3 +75,24 @@ case_column_date = [
             'NIHSINH_NM',
             'NIHSINM_NM'
             ]
+
+ElasticNet_drop_column = [
+            'HCT_NM',
+            'NIHS_4_in',
+            'PTINR_NM',
+            'NIHS_9_in',
+            'ER_NM',
+            'CRE_NM',
+            'GCSM_NM',
+            'CRP_NM',
+            'GENDER_0',
+            'GENDER_1',
+            'NIHS_3_in',
+            'ALB_NM',
+            'NIHS_11_in',
+            'HR_NM',
+            'BT_NM',
+            'PTT1_NM',
+            'UR_ID',
+            'RR_NM'
+]

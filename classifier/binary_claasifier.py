@@ -2,7 +2,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
 from sklearn.utils import shuffle
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 import pandas as pd
+import numpy as np
 import os, sys
 sys.path.append(os.path.abspath(os.path.join('/data/linc9/tsr_er/')))
 from data import data_util, selected_columns
@@ -36,7 +38,8 @@ else:
     data_util.save_variables(testing_data_name, [id_test, X_test, y_test])
 
 
-clf = RandomForestClassifier(n_estimators=100, random_state=123, class_weight='balanced')
+clf = RandomForestClassifier(n_estimators=1000, random_state=123, class_weight='balanced')
+# clf = SVC(probability=True)
 # All Features
 clf.fit(X_train, y_train)
 y_predict = clf.predict(X_test)
@@ -48,9 +51,17 @@ fpr, tpr, thresholds = roc_curve(y_test, y_probas[:, 1])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
 
-# LASSO Features
-X_train_Lasso = X_train.drop(['GENDER_1', 'ALB_NM', 'HR_NM', 'ER_NM', 'PTT1_NM', 'NIHS_8_in', 'NIHS_3_in', 'CRP_NM', 'PTINR_NM', 'GCSM_NM', 'NIHS_6bR_in', 'HBAC_NM', 'HCT_NM', 'NIHS_11_in'], axis=1)
-X_test_Lasso = X_test.drop(['GENDER_1', 'ALB_NM', 'HR_NM', 'ER_NM', 'PTT1_NM', 'NIHS_8_in', 'NIHS_3_in', 'CRP_NM', 'PTINR_NM', 'GCSM_NM', 'NIHS_6bR_in', 'HBAC_NM', 'HCT_NM', 'NIHS_11_in'], axis=1)
+# == Feature importance
+feature_names = X_train.columns.values
+importances = clf.feature_importances_
+indices = np.argsort(importances)[::-1]
+for i in range(X_train.shape[1]):
+    print("%d. %f %s" % (i + 1, importances[indices[i]], feature_names[indices[i]]))
+# ===
+
+# ElasticNet Features
+X_train_Lasso = X_train.drop(selected_columns.ElasticNet_drop_column, axis=1)
+X_test_Lasso = X_test.drop(selected_columns.ElasticNet_drop_column, axis=1)
 clf.fit(X_train_Lasso, y_train)
 y_predict = clf.predict(X_test_Lasso)
 print(classification_report(y_test, y_predict))
