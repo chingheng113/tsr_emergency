@@ -1,39 +1,46 @@
-import numpy as np
+id_column = [
+    'ICASE_ID',
+    'IDCASE_ID'
+]
 
-case_column = ['ICASE_ID',
-               'IDCASE_ID',
-               'ORG_ID',
-               'HEIGHT_NM',
-               'WEIGHT_NM',
-               'OPC_ID',
-               'ONSET_DT',
-               'GCSE_NM',
-               'GCSV_NM',
-               'GCSM_NM',
-               'SBP_NM',
-               'DBP_NM',
-               'BT_NM',
-               'HR_NM',
-               'RR_NM',
-               'ICD_ID',
-               'HB_NM',
-               'HCT_NM',
-               'PLATELET_NM',
-               'WBC_NM',
-               'PTT1_NM',
-               'PTT2_NM',
-               'PTINR_NM',
-               'ER_NM',
-               'BUN_NM',
-               'CRE_NM',
-               'ALB_NM',
-               'CRP_NM',
-               'HBAC_NM'
-               ]
+dm_column = [
+    'ORG_ID',
+    'HEIGHT_NM',
+    'WEIGHT_NM',
+    'OPC_ID',
+    'ONSET_DT'
+]
+
+gcs_vital_column = [
+    'GCSE_NM',
+    'GCSV_NM',
+    'GCSM_NM',
+    'SBP_NM',
+    'DBP_NM',
+    'BT_NM',
+    'HR_NM',
+    'RR_NM'
+]
+
+lb_column = [
+    'HB_NM',
+    'HCT_NM',
+    'PLATELET_NM',
+    'WBC_NM',
+    'PTT1_NM',
+    'PTT2_NM',
+    'PTINR_NM',
+    'ER_NM',
+    'BUN_NM',
+    'CRE_NM',
+    'ALB_NM',
+    'CRP_NM',
+    'HBAC_NM'
+]
+
+case_column = id_column+dm_column+gcs_vital_column+lb_column+['ICD_ID']
 
 nihs_column = [
-    'ICASE_ID',
-    'IDCASE_ID',
     'NIHS_1a_in',
     'NIHS_1b_in',
     'NIHS_1c_in',
@@ -74,7 +81,8 @@ case_column_date = [
             'NIHSIN_DT',
             'NIHSINH_NM',
             'NIHSINM_NM'
-            ]
+]
+
 
 ElasticNet_drop_column = [
             'HCT_NM',

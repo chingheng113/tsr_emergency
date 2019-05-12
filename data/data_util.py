@@ -9,10 +9,12 @@ from datetime import datetime
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from imblearn.under_sampling import TomekLinks, RandomUnderSampler
 from imblearn.over_sampling import SMOTE
+import os
+current_path = os.path.dirname(__file__)
 
 
 def clean_nihs():
-    df_nihs = pd.read_csv('CASEDNIHS(denormalized).csv')
+    df_nihs = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDNIHS(denormalized).csv'))
     # print(df_nihs.shape)
     df_nihs['NIHS_1a_in'].loc[~df_nihs.NIHS_1a_in.isin(['0', '1', '2', '3'])] = np.nan
     df_nihs['NIHS_1a_out'].loc[~df_nihs.NIHS_1a_out.isin(['0', '1', '2', '3'])] = np.nan
@@ -59,7 +61,7 @@ def clean_nihs():
 
 
 def clean_dbmrs():
-    df_dbmrs = pd.read_csv('CASEDBMRS(denormalized).csv')
+    df_dbmrs = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDBMRS(denormalized).csv'))
     df_dbmrs['Feeding'].loc[~df_dbmrs.Feeding.isin(['0', '5', '10'])] = np.nan
     df_dbmrs['Transfers'].loc[~df_dbmrs.Transfers.isin(['0', '5', '10', '15'])] = np.nan
     df_dbmrs['Bathing'].loc[~df_dbmrs.Bathing.isin(['0', '5'])] = np.nan
@@ -75,7 +77,7 @@ def clean_dbmrs():
 
 
 def clean_rfur():
-    df_rfur = pd.read_csv('CASEDRFUR(denormalized).csv')
+    df_rfur = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDRFUR(denormalized).csv'))
     rfur_cols = ['VERS_1', 'VERS_3', 'VERS_6', 'VERS_12', 'VEIHD_1', 'VEIHD_3', 'VEIHD_6', 'VEIHD_12']
     df_rfur.drop(rfur_cols, axis=1, inplace=True)
     df_rfur['MRS_1'].loc[~df_rfur.MRS_1.isin(['0', '1', '2', '3', '4', '5', '6'])] = np.nan
@@ -86,7 +88,7 @@ def clean_rfur():
 
 
 def get_cleaned_dgfa_for_er():
-    df_dgfa = pd.read_csv('CASEDDGFA.csv')
+    df_dgfa = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDDGFA.csv'))
     df_dgfa = df_dgfa[['ICASE_ID', 'IDCASE_ID']+selected_columns.dgfa_column]
     for c in selected_columns.dgfa_column:
         # Don't want 'don't know'
@@ -94,9 +96,10 @@ def get_cleaned_dgfa_for_er():
     df_dgfa.dropna(axis=0, inplace=True)
     return df_dgfa
 
+
 def get_cleaned_nihs_for_er():
     df_nihs = clean_nihs()
-    df_nihs = df_nihs[selected_columns.nihs_column]
+    df_nihs = df_nihs[selected_columns.id_column+selected_columns.nihs_column]
     df_nihs.dropna(axis=0)
     return df_nihs
 
@@ -120,7 +123,7 @@ def outlier_to_mean(df, columns):
 
 
 def get_cleaned_case_for_er():
-    df_case = pd.read_csv('CASEDCASE.csv')
+    df_case = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDCASE.csv'))
     df_case = df_case[selected_columns.case_column]
 
     # Replace numeric outlier to Median
@@ -141,7 +144,7 @@ def get_cleaned_case_for_er():
 
 
 def get_cleaned_mcase():
-    df_mcase = pd.read_csv('CASEMCASE.csv')
+    df_mcase = pd.read_csv(os.path.join(current_path, 'raw', 'CASEMCASE.csv'))
     df_mcase = df_mcase[['ICASE_ID', 'BIRTH_DT', 'GENDER_TX']]
     df_mcase['BIRTH_DT'] = pd.to_datetime(df_mcase['BIRTH_DT'], format='%Y-%M-%d', errors='coerce')
     df_mcase['GENDER_TX'] = df_mcase['GENDER_TX'].replace(to_replace={'F': 0, 'M': 1})
@@ -262,7 +265,7 @@ def create_tsr_er_dataset():
     df_merged.dropna(axis=0, inplace=True)
     df_result = calculate_age(df_merged)
     df_result = exclusion_criteria(df_result)
-    df_result.to_csv('tsr_er.csv', index=False)
+    df_result.to_csv('tsr_er_og.csv', index=False)
 
 
 def create_mrs_nih_dataset():
