@@ -15,10 +15,10 @@ testing_data_name = os.path.join('..', 'data', 'testing_data_processed.pkl')
 if os.path.isfile(training_data_name) & os.path.isfile(testing_data_name):
     id_train, X_train, y_train = data_util.load_variable(training_data_name)
     train_df = pd.concat([id_train, X_train, y_train], axis=1)
-    train_df.to_csv('training_data_processed.csv', index=False)
+    train_df.to_csv(os.path.join('..', 'data', 'training_data_processed.csv'), index=False)
     id_test, X_test, y_test = data_util.load_variable(testing_data_name)
     test_df = pd.concat([id_test, X_test, y_test], axis=1)
-    test_df.to_csv('testing_data_processed.csv', index=False)
+    test_df.to_csv(os.path.join('..', 'data', 'testing_data_processed.csv'), index=False)
 else:
     data = pd.read_csv(os.path.join('..', 'data', 'tsr_er_og.csv'))
     data = data_util.get_binary_data(data)
@@ -30,9 +30,9 @@ else:
     id_train, id_test, X_train, X_test, y_train, y_test = train_test_split(id_data, X_data, y_data, test_size=0.33, random_state=42)
 
     train_df = pd.concat([id_train, X_train, y_train], axis=1)
-    train_df.to_csv('training_data_og.csv', index=False)
+    train_df.to_csv(os.path.join('..', 'data', 'training_data_og.csv'), index=False)
     test_df = pd.concat([id_test, X_test, y_test], axis=1)
-    test_df.to_csv('testing_data_og.csv', index=False)
+    test_df.to_csv(os.path.join('..', 'data', 'testing_data_og.csv'), index=False)
 
     # preprocess training data
     id_train, X_train, y_train = data_util.get_binary_Tomek_Links_cleaned_data(id_train, X_train, y_train)
