@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 predict_result = pd.read_csv('predict_result.csv')
-testing_data_name = os.path.join('..', 'data', 'testing_data.pkl')
+testing_data_name = os.path.join('..', 'data', 'testing_data_processed.pkl')
 id_test, X_test, y_test = data_util.load_variable(testing_data_name)
 
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['n'])
