@@ -124,13 +124,6 @@ def outlier_to_mean(df, columns):
 
 def get_cleaned_case_for_er():
     df_case = pd.read_csv(os.path.join(current_path, 'raw', 'CASEDCASE.csv'))
-    df_case = df_case[selected_columns.case_column]
-
-    # Replace numeric outlier to Median
-    outlier_cols = ['HEIGHT_NM', 'WEIGHT_NM', 'SBP_NM', 'DBP_NM', 'BT_NM', 'HR_NM', 'RR_NM',
-                    'HB_NM', 'HCT_NM', 'PLATELET_NM', 'WBC_NM', 'PTT1_NM', 'PTT2_NM', 'PTINR_NM',
-                    'ER_NM', 'BUN_NM', 'CRE_NM', 'ALB_NM', 'CRP_NM', 'HBAC_NM']
-    df_case = outlier_to_mean(df_case, outlier_cols)
     # Degree type data
     df_case['OPC_ID'].loc[~df_case.OPC_ID.isin(['1', '2', '3'])] = np.nan
     df_case['ICD_ID'].loc[~df_case.ICD_ID.isin(['1', '2', '3', '4'])] = np.nan
@@ -139,6 +132,7 @@ def get_cleaned_case_for_er():
     df_case['GCSM_NM'].loc[~df_case.GCSM_NM.isin(['1', '2', '3', '4', '5', '6'])] = np.nan
     # Date type
     df_case['ONSET_DT'] = pd.to_datetime(df_case['ONSET_DT'], format='%Y-%M-%d', errors='coerce')
+    df_case = df_case[selected_columns.case_column]
     df_case.dropna(axis=0, inplace=True)
     return df_case
 
@@ -254,31 +248,6 @@ def get_binary_data(df):
     return df
 
 
-def create_tsr_er_dataset():
-    df_case = get_cleaned_case_for_er()
-    df_nihs = get_cleaned_nihs_for_er()
-    df_mcase = get_cleaned_mcase()
-    df_dgfr = get_cleaned_dgfa_for_er()
-    df_merged = pd.merge(df_case, df_nihs, on=['ICASE_ID', 'IDCASE_ID'])
-    df_merged = pd.merge(df_merged, df_dgfr, on=['ICASE_ID', 'IDCASE_ID'])
-    df_merged = pd.merge(df_merged, df_mcase, on=['ICASE_ID'])
-    df_merged.dropna(axis=0, inplace=True)
-    df_result = calculate_age(df_merged)
-    df_result = exclusion_criteria(df_result)
-    df_result.to_csv('tsr_er_og.csv', index=False)
-
-
-def create_mrs_nih_dataset():
-    df_mcase = get_cleaned_mcase()
-    df_dbmrs = clean_dbmrs() # still keep null
-    df_nihs = clean_nihs() # still keep null
-    df_rfur = clean_rfur() # still keep null
-    df_merged = pd.merge(df_nihs, df_dbmrs, on=['ICASE_ID', 'IDCASE_ID'])
-    df_merged = pd.merge(df_merged, df_rfur, on=['ICASE_ID', 'IDCASE_ID'])
-    df_merged = pd.merge(df_merged, df_mcase, on=['ICASE_ID'])
-    df_merged.to_csv('mrs_nihss.csv', index=False)
-
-
 def save_variables(filename, variable):
     with open(filename, 'wb') as f:
         pickle.dump(variable, f)
@@ -288,7 +257,3 @@ def load_variable(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
 
-
-if __name__ == '__main__':
-    create_tsr_er_dataset()
-    # create_mrs_nih_dataset()

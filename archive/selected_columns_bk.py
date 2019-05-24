@@ -12,16 +12,29 @@ dm_column = [
 ]
 
 gcs_vital_column = [
+    # 'GCSE_NM',
+    # 'GCSV_NM',
+    # 'GCSM_NM',
     'SBP_NM',
     'DBP_NM'
+    # 'BT_NM',
+    # 'HR_NM',
+    # 'RR_NM'
 ]
 
 lb_column = [
+    # 'HB_NM',
+    # 'HCT_NM',
     'PLATELET_NM',
+    # 'WBC_NM',
     'PTT1_NM',
+    # 'PTT2_NM',
     'PTINR_NM',
     'ER_NM',
+    # 'BUN_NM',
     'CRE_NM',
+    # 'ALB_NM',
+    # 'CRP_NM',
     'HBAC_NM'
 ]
 
@@ -52,6 +65,7 @@ dgfa_column = [
     'PCVA_ID',
     'PTIA_ID',
     'HD_ID',
+    # 'UR_ID',
     'PAD_ID'
 ]
 
