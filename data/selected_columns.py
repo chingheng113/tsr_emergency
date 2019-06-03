@@ -55,6 +55,15 @@ dgfa_column = [
     'PAD_ID'
 ]
 
+dgfa_column_converted = [
+    'HT_ID',
+    'HC_ID',
+    'DM_ID',
+    'PISCH_ID',
+    'HD_ID',
+    'PAD_ID'
+]
+
 case_column_date = [
             'ONSETH_NM',
             'ONSETM_NM',
@@ -70,23 +79,32 @@ case_column_date = [
 ]
 
 
-ElasticNet_drop_column = [
-            'HCT_NM',
-            'NIHS_4_in',
-            'PTINR_NM',
-            'NIHS_9_in',
-            'ER_NM',
-            'CRE_NM',
-            'GCSM_NM',
-            'CRP_NM',
-            'GENDER_0',
-            'GENDER_1',
-            'NIHS_3_in',
-            'ALB_NM',
-            'NIHS_11_in',
-            'HR_NM',
-            'BT_NM',
-            'PTT1_NM',
-            'UR_ID',
-            'RR_NM'
+Lasso_column = [
+    "HEIGHT_NM",
+    "WEIGHT_NM",
+    "SBP_NM",
+    "DBP_NM",
+    "PLATELET_NM",
+    "PTT1_NM",
+    "PTINR_NM",
+    "ER_NM",
+    "CRE_NM",
+    "NIHS_1a_in",
+    "NIHS_1b_in",
+    "NIHS_2_in",
+    "NIHS_4_in",
+    "NIHS_5aL_in",
+    "NIHS_5bR_in",
+    "NIHS_6aL_in",
+    "NIHS_6bR_in",
+    "NIHS_7_in",
+    "NIHS_10_in",
+    "NIHS_11_in",
+    "AGE",
+    "HT_ID",
+    "HC_ID",
+    "DM_ID",
+    "PISCH_ID",
+    "HD_ID",
+    "PAD_ID"
 ]

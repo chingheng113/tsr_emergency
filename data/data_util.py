@@ -113,11 +113,15 @@ def outliers_iqr(ys):
     return np.where((ys > upper_bound) | (ys < lower_bound))
 
 
-def outlier_to_mean(df, columns):
+def outlier_to_nan(df, columns):
     for col in columns:
-        df[col].loc[df[col] > 998] = np.nan
+        df[col].replace([999, 999.9, 996], np.nan, inplace=True)
         outlier_inx = outliers_iqr(df[col])
         df[col].loc[outlier_inx] = np.nan
+    return df
+
+
+def missing_to_mean(df, columns):
     df[columns] = Imputer(missing_values=np.nan, strategy='mean', axis=0).fit_transform(df[columns])
     return df
 
@@ -168,8 +172,8 @@ def exclusion_criteria(df):
 def normalization_onehotcoding_for_training(X_df):
     scaler = StandardScaler()
     X_data_category = pd.get_dummies(X_df['GENDER_TX'].astype(int), prefix='GENDER')
-    x_data_bool = X_df[selected_columns.dgfa_column]
-    X_data_numeric = X_df.drop(['GENDER_TX']+selected_columns.dgfa_column, axis=1)
+    x_data_bool = X_df[selected_columns.dgfa_column_converted]
+    X_data_numeric = X_df.drop(['GENDER_TX']+selected_columns.dgfa_column_converted, axis=1)
     scaler.fit(X_data_numeric)
     X_data_scaled = scaler.transform(X_data_numeric)
     X_data_scaled = pd.DataFrame(X_data_scaled, index=X_data_numeric.index, columns=X_data_numeric.columns)
@@ -179,8 +183,8 @@ def normalization_onehotcoding_for_training(X_df):
 
 def normalization_onehotcoding_for_testing(X_df, scaler):
     X_data_category = pd.get_dummies(X_df['GENDER_TX'].astype(int), prefix='GENDER')
-    x_data_bool = X_df[selected_columns.dgfa_column]
-    X_data_numeric = X_df.drop(['GENDER_TX'] + selected_columns.dgfa_column, axis=1)
+    x_data_bool = X_df[selected_columns.dgfa_column_converted]
+    X_data_numeric = X_df.drop(['GENDER_TX'] + selected_columns.dgfa_column_converted, axis=1)
     X_data_scaled = scaler.transform(X_data_numeric)
     X_data_scaled = pd.DataFrame(X_data_scaled, index=X_data_numeric.index, columns=X_data_numeric.columns)
     result = pd.concat([X_data_category, X_data_scaled, x_data_bool], axis=1)

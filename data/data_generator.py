@@ -19,7 +19,19 @@ def create_tsr_er_dataset():
     df_merged.dropna(axis=0, inplace=True)
     df_result = data_util.calculate_age(df_merged)
     df_result = data_util.exclusion_criteria(df_result)
+    df_result.reset_index(inplace=True, drop=True)
+    df_result = replace_outlier_to_nan(df_result)
+    df_result = convert_dgfr(df_result)
     df_result.to_csv('tsr_er_og.csv', index=False)
+
+
+def convert_dgfr(df_dgfr):
+    previous_CVA = df_dgfr['PCVA_ID'].values
+    previous_TIA = df_dgfr['PTIA_ID'].values
+    previous_ischemia = [a or b for a, b in zip(previous_CVA, previous_TIA)]
+    df_dgfr.insert(df_dgfr.columns.get_loc('PTIA_ID')+1, 'PISCH_ID', previous_ischemia)
+    df_dgfr.drop(['PCVA_ID', 'PTIA_ID'], axis=1, inplace=True)
+    return df_dgfr
 
 
 def create_mrs_nih_dataset():
@@ -33,13 +45,23 @@ def create_mrs_nih_dataset():
     df_merged.to_csv('mrs_nihss.csv', index=False)
 
 
-def replace_outlier_to_median(data):
+def replace_outlier_to_nan(data):
     data_numeric = data.drop(['GENDER_TX']+['ICD_ID']
                              + selected_columns.dgfa_column
                              + selected_columns.id_column
                              + selected_columns.nihs_column
                              , axis=1)
-    data = data_util.outlier_to_mean(data, data_numeric.columns)
+    data = data_util.outlier_to_nan(data, data_numeric.columns)
+    return data
+
+
+def replace_nan_to_mean(data):
+    data_numeric = data.drop(['GENDER_TX'] + ['ICD_ID']
+                             + selected_columns.dgfa_column_converted
+                             + selected_columns.id_column
+                             + selected_columns.nihs_column
+                             , axis=1)
+    data = data_util.missing_to_mean(data, data_numeric.columns)
     return data
 
 
@@ -47,7 +69,7 @@ def get_training_testing_data():
     data = pd.read_csv(os.path.join(current_path, 'tsr_er_og.csv'))
     data = data_util.get_binary_data(data)
     data = shuffle(data)
-    data = replace_outlier_to_median(data)
+    data = replace_nan_to_mean(data)
     id_data = data[['ICASE_ID', 'IDCASE_ID']]
     y_data = data[['ICD_ID']]
     X_data = data.drop(['ICASE_ID', 'IDCASE_ID', 'ICD_ID'], axis=1)
@@ -63,10 +85,17 @@ def get_training_testing_data():
     id_train, X_train, y_train = data_util.get_binary_Tomek_Links_cleaned_data(id_train, X_train, y_train)
     id_train, X_train, y_train = data_util.get_random_under_samples(id_train, X_train, y_train)
     scaler, X_train = data_util.normalization_onehotcoding_for_training(X_train)
+    train_processed_df = pd.concat([id_train, X_train, y_train], axis=1)
+    train_processed_df.to_csv(os.path.join('..', 'data', 'training_data_processed.csv'), index=False)
     # preprocess testing data
     X_test = data_util.normalization_onehotcoding_for_testing(X_test, scaler)
+    test_processed_df = pd.concat([id_test, X_test, y_test], axis=1)
+    test_processed_df.to_csv(os.path.join('..', 'data', 'testing_data_processed.csv'), index=False)
     return id_train, id_test, X_train, X_test, y_train, y_test
+
 
 if __name__ == '__main__':
     create_tsr_er_dataset()
     # get_training_testing_data()
+    # df = pd.read_csv('tsr_er_og.csv')
+    # convert_dgfr(df)
