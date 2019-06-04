@@ -30,5 +30,7 @@ a='HBAC_NM'
 # print(df_he[a].dropna().shape[0])
 # print(df_he[a].dropna().mean(), df_he[a].dropna().std())
 
-b ='HT_ID'
-print(data[data.NIHS_1a_in ==0].shape[0])
+b ='PAD_ID'
+print(data[data[b] ==0].shape[0])
+print(df_is[df_is[b] ==0].shape[0])
+print(df_he[df_he[b] ==0].shape[0])

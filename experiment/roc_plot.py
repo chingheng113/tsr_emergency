@@ -12,31 +12,35 @@ id_test, X_test, y_test = data_util.load_variable(testing_data_name)
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['n'])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
-plt.plot(fpr, tpr, label='NIHSS (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
+plt.plot(fpr, tpr, label='SVM with DN (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['nv'])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
-plt.plot(fpr, tpr, label='NIHSS+VS (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
+plt.plot(fpr, tpr, label='SVM with DNV (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['nvl'])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
-plt.plot(fpr, tpr, label='NIHSS+VS+LB (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
+plt.plot(fpr, tpr, label='SVM with DNVL (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['nvlr'])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
-plt.plot(fpr, tpr, label='NIHSS+VS+LB+RF (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
+plt.plot(fpr, tpr, label='SVM with DNVLR (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 
 fpr, tpr, thresholds = roc_curve(y_test, predict_result['se'])
 roc_auc = auc(fpr, tpr)
 print(roc_auc)
-plt.plot(fpr, tpr, label='Elastic features (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
+plt.plot(fpr, tpr, label='SVM with selected features (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
+fpr, tpr, thresholds = roc_curve(y_test, predict_result['lasso'])
+roc_auc = auc(fpr, tpr)
+print(roc_auc)
+plt.plot(fpr, tpr, label='LASSO (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 plt.legend(loc="lower right", prop={'size': 12})
 plt.show()
