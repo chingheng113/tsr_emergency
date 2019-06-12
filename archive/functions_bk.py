@@ -34,6 +34,6 @@ def temp_func():
     df.to_csv('tpa_hospital.csv')
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     a = 0
     is_tpa()
