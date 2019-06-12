@@ -22,8 +22,8 @@ else:
 clf = SVC(probability=True)
 
 # NIHSS
-X_train_nih = X_train.drop(sc.gcs_vital_column+sc.lb_column+sc.dgfa_column_converted, axis=1)
-X_test_nih = X_test.drop(sc.gcs_vital_column+sc.lb_column+sc.dgfa_column_converted, axis=1)
+X_train_nih = X_train.drop(sc.gcs_vital_column+sc.dgfa_column_converted+sc.lb_column, axis=1)
+X_test_nih = X_test.drop(sc.gcs_vital_column+sc.dgfa_column_converted+sc.lb_column, axis=1)
 clf.fit(X_train_nih, y_train)
 y_predict = clf.predict(X_test_nih)
 print(classification_report(y_test, y_predict))
@@ -36,8 +36,8 @@ print(roc_auc)
 
 
 # NIHSS+VS
-X_train_nih_vs = X_train.drop(sc.lb_column+sc.dgfa_column_converted, axis=1)
-X_test_nih_vs = X_test.drop(sc.lb_column+sc.dgfa_column_converted, axis=1)
+X_train_nih_vs = X_train.drop(sc.dgfa_column_converted+sc.lb_column, axis=1)
+X_test_nih_vs = X_test.drop(sc.dgfa_column_converted+sc.lb_column, axis=1)
 clf.fit(X_train_nih_vs, y_train)
 y_predict = clf.predict(X_test_nih_vs)
 print(classification_report(y_test, y_predict))
@@ -49,9 +49,9 @@ roc_auc = auc(fpr, tpr)
 print(roc_auc)
 
 
-# NIHSS+VS+LB
-X_train_nih_lb = X_train.drop(sc.dgfa_column_converted, axis=1)
-X_test_nih_lb = X_test.drop(sc.dgfa_column_converted, axis=1)
+# NIHSS+VS+FS
+X_train_nih_lb = X_train.drop(sc.lb_column, axis=1)
+X_test_nih_lb = X_test.drop(sc.lb_column, axis=1)
 clf.fit(X_train_nih_lb, y_train)
 y_predict = clf.predict(X_test_nih_lb)
 print(classification_report(y_test, y_predict))
@@ -63,7 +63,7 @@ roc_auc = auc(fpr, tpr)
 print(roc_auc)
 
 
-# all (NIHSS + VS + LB + Risk Factor)
+# all (NIHSS + VS + Risk Factor + LB )
 clf.fit(X_train, y_train)
 y_predict = clf.predict(X_test)
 print(classification_report(y_test, y_predict))

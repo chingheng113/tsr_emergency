@@ -32,3 +32,8 @@ def temp_func():
     df_2 = df_2[['ICASE_ID', 'IDCASE_ID']]
     df = pd.merge(df_1, df_2, on=['ICASE_ID', 'IDCASE_ID'])
     df.to_csv('tpa_hospital.csv')
+
+
+if __name__ == 'main':
+    a = 0
+    is_tpa()
