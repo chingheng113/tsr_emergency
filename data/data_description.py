@@ -10,6 +10,11 @@ from sklearn.manifold import TSNE
 
 
 data = pd.read_csv(os.path.join('..', 'data', 'tsr_er_og.csv'))
+
+case_data = pd.read_csv(os.path.join('..', 'data', 'raw', 'CASEDCASE.csv'))
+icd_tex = case_data['ICD_TX'].value_counts()
+
+
 df_is = data[(data.ICD_ID == 1) | (data.ICD_ID == 2)]
 df_he = data[(data.ICD_ID == 3) | (data.ICD_ID == 4)]
 
