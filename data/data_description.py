@@ -13,7 +13,7 @@ data = pd.read_csv(os.path.join('..', 'data', 'tsr_er_og.csv'))
 
 case_data = pd.read_csv(os.path.join('..', 'data', 'raw', 'CASEDCASE.csv'))
 icd_tex = case_data['ICD_TX'].value_counts()
-
+icd_tex.to_csv('ICD_code.csv')
 
 df_is = data[(data.ICD_ID == 1) | (data.ICD_ID == 2)]
 df_he = data[(data.ICD_ID == 3) | (data.ICD_ID == 4)]
