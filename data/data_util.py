@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 from data import selected_columns
-from sklearn.preprocessing import Imputer
+from sklearn.impute import SimpleImputer
 from sklearn.utils import resample
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -122,7 +122,7 @@ def outlier_to_nan(df, columns):
 
 
 def missing_to_mean(df, columns):
-    df[columns] = Imputer(missing_values=np.nan, strategy='mean', axis=0).fit_transform(df[columns])
+    df[columns] = SimpleImputer(missing_values=np.nan, strategy='mean').fit_transform(df[columns])
     return df
 
 
