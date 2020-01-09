@@ -220,7 +220,8 @@ def get_multi_balanced_data(df):
 
 def get_binary_Tomek_Links_cleaned_data(id_df, X_df, y_df):
     tLinks = TomekLinks()
-    tLinks.fit_sample(X_df, y_df)
+    a = y_df.iloc[:,0]
+    tLinks.fit_sample(X_df, y_df.iloc[:,0])
     sample_indices = tLinks.sample_indices_
     id_df_cleaned = id_df.iloc[sample_indices]
     X_df_cleaned = X_df.iloc[sample_indices]
@@ -230,7 +231,7 @@ def get_binary_Tomek_Links_cleaned_data(id_df, X_df, y_df):
 
 def get_random_under_samples(id_df, X_df, y_df):
     rus = RandomUnderSampler(random_state=42)
-    rus.fit_sample(X_df, y_df)
+    rus.fit_sample(X_df, y_df.iloc[:,0])
     print(y_df[y_df.ICD_ID == 1].shape)
     sample_indices = rus.sample_indices_
     id_df_cleaned = id_df.iloc[sample_indices]
