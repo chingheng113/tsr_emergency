@@ -43,4 +43,5 @@ print(roc_auc)
 plt.plot(fpr, tpr, label='LASSO (AUC = %0.3f )' % roc_auc, lw=1, alpha=.8)
 
 plt.legend(loc="lower right", prop={'size': 12})
+plt.savefig('myimage.png', format='png', dpi=1200)
 plt.show()
